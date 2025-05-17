@@ -1,0 +1,25 @@
+@page "{id:guid}"
+@model Nexy.Pages.Admin.EditModelModel
+@{
+    ViewData["Title"] = "Редактировать модель";
+}
+
+<h2>Редактирование модели</h2>
+
+<form method="post">
+    <input type="hidden" asp-for="Input.Id" />
+    
+    <label>Имя:</label>
+    <input asp-for="Input.Name" required />
+    
+    <label>Описание:</label>
+    <textarea asp-for="Input.Description"></textarea>
+    
+    <label>Ссылка на аватар:</label>
+    <input asp-for="Input.AvatarUrl" required />
+    
+    <label>Активна:</label>
+    <input asp-for="Input.IsActive" type="checkbox" />
+
+    <button type="submit" class="btn">Сохранить</button>
+</form>

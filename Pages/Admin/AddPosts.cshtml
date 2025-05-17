@@ -1,0 +1,23 @@
+@page
+@model Nexy.Pages.Admin.AddPostsModel
+@{
+    ViewData["Title"] = "Добавить посты";
+}
+
+<h2>Добавить фото для модели @Model.ModelName</h2>
+
+<form method="post">
+    <textarea asp-for="RawInput" rows="15" placeholder="Caption\nhttps://..."></textarea>
+    <button type="submit" class="btn">Загрузить</button>
+</form>
+
+<p>Формат ввода:<br/>
+    Каждая пара строк — подпись и ссылка:</p>
+
+<pre>
+Caption
+https://image-url
+
+Caption
+https://image-url
+</pre>

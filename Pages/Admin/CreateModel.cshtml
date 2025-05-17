@@ -1,0 +1,23 @@
+@page
+@model Nexy.Pages.Admin.CreateModelModel
+@{
+    ViewData["Title"] = "Создать модель";
+}
+
+<h2>Создание модели</h2>
+
+<form method="post">
+    <label>Имя:</label>
+    <input asp-for="Input.Name" required />
+    
+    <label>Описание:</label>
+    <textarea asp-for="Input.Description"></textarea>
+    
+    <label>Ссылка на аватар:</label>
+    <input asp-for="Input.AvatarUrl" required />
+    
+    <label>Активна:</label>
+    <input asp-for="Input.IsActive" type="checkbox" />
+
+    <button type="submit" class="btn">Сохранить</button>
+</form>
