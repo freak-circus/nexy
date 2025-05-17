@@ -1,0 +1,33 @@
+@page
+@model Nexy.Pages.Admin.EditPostsModel
+@{
+    ViewData["Title"] = "Редактирование постов";
+}
+
+<h2>Посты модели @Model.ModelName</h2>
+
+@foreach (var post in Model.Posts)
+{
+    <form method="post" asp-page-handler="Update" class="post-form">
+        <input type="hidden" name="postId" value="@post.Id" />
+        <div>
+            <label>Caption:</label>
+            <input type="text" name="caption" value="@post.Caption" class="input"/>
+        </div>
+        <div>
+            <label>Image URL:</label>
+            <input type="text" name="imageUrl" value="@post.ImageUrl" class="input"/>
+        </div>
+        <div>
+            <img src="@post.ImageUrl" alt="img" style="max-width:200px; border-radius:10px;" />
+        </div>
+        <button type="submit" class="btn">Обновить</button>
+    </form>
+
+    <form method="post" asp-page-handler="Delete" style="display:inline;">
+        <input type="hidden" name="postId" value="@post.Id" />
+        <button type="submit" class="btn delete">Удалить</button>
+    </form>
+
+    <hr/>
+}

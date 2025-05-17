@@ -27,6 +27,7 @@
             <td>
                 <a asp-page="EditModel" asp-route-id="@m.Id">Редактировать</a> |
                 <a asp-page="AddPosts" asp-route-id="@m.Id">Фото</a> |
+                <a asp-page="EditPosts" asp-route-id="@m.Id">Редактировать фото</a> |
                 <form method="post" asp-page-handler="Delete" asp-route-id="@m.Id" style="display:inline">
                     <button type="submit" onclick="return confirm('Удалить?')">Удалить</button>
                 </form>
