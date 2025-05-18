@@ -1,0 +1,68 @@
+﻿@page
+@model RegisterModel
+
+@{
+    ViewData["Title"] = "Регистрация";
+    Layout = "_Layout";
+}
+
+<link rel="stylesheet" href="~/css/Register.css" asp-append-version="true" />
+
+<div class="register-container">
+    <div class="register-form fade-in">
+        <h2 class="register-form__title">Регистрация</h2>
+        <form method="post" asp-route-returnUrl="@Model.ReturnUrl">
+            <div asp-validation-summary="ModelOnly" class="register-form__error" role="alert"></div>
+            <div class="register-form__group">
+                <label asp-for="Input.Email" class="register-form__label">Электронная почта</label>
+                <input asp-for="Input.Email" class="register-form__input" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                <span asp-validation-for="Input.Email" class="register-form__error"></span>
+            </div>
+            <div class="register-form__group">
+                <label asp-for="Input.Password" class="register-form__label">Пароль</label>
+                <input asp-for="Input.Password" class="register-form__input" autocomplete="new-password" aria-required="true" placeholder="Пароль" />
+                <span asp-validation-for="Input.Password" class="register-form__error"></span>
+            </div>
+            <div class="register-form__group">
+                <label asp-for="Input.ConfirmPassword" class="register-form__label">Подтверждение пароля</label>
+                <input asp-for="Input.ConfirmPassword" class="register-form__input" autocomplete="new-password" aria-required="true" placeholder="Подтверждение пароля" />
+                <span asp-validation-for="Input.ConfirmPassword" class="register-form__error"></span>
+            </div>
+            <button type="submit" class="register-form__submit">Зарегистрироваться</button>
+        </form>
+
+        <div class="register-form__links">
+            <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" class="register-form__link">Уже есть аккаунт? Войти</a>
+        </div>
+
+        @if (Model.ExternalLogins?.Count > 0)
+        {
+            <div class="register-form__external">
+                <h3 class="register-form__external-title">Зарегистрироваться через</h3>
+                <form asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                    <div class="register-form__external-buttons">
+                        @foreach (var provider in Model.ExternalLogins)
+                        {
+                            <button type="submit" class="register-form__external-button" name="provider" value="@provider.Name" title="Зарегистрироваться через @provider.DisplayName">
+                                @provider.DisplayName
+                            </button>
+                        }
+                    </div>
+                </form>
+            </div>
+        }
+        else
+        {
+            <div class="register-form__external">
+                <p class="register-form__external-text">
+                    Внешние сервисы авторизации не настроены. Подробности в
+                    <a href="https://go.microsoft.com/fwlink/?LinkID=532715" class="register-form__link">этой статье</a>.
+                </p>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -7,28 +7,29 @@
 <div class="container">
     <div class="profile-card">
         <div class="profile-card__header">
-            <img src="@Model.Profile!.AvatarUrl" alt="Avatar" class="profile-card__avatar" />
+            <img src="@Model.Profile!.AvatarUrl" alt="@Model.Profile.Name's avatar" class="profile-card__avatar" />
             <div>
                 <h2 class="profile-card__name">@Model.Profile.Name</h2>
                 <p class="profile-card__description">@Model.Profile.Description</p>
-                <a href="https://@Model.Profile.OnlyLink">@Model.Profile.OnlyLink</a>
             </div>
         </div>
-    </div>
-
-    <div class="space-y-6">
-        @foreach (var post in Model.Profile.Posts.OrderByDescending(p => p.CreatedAt))
+        @if (!string.IsNullOrEmpty(Model.Profile.OnlyLink))
         {
-            <div class="feed-post">
-                <img src="@post.ImageUrl" alt="Post" class="feed-post__image" />
-                <p class="feed-post__caption">@post.Caption</p>
+            <div class="profile-card__actions">
+                <a href="@Model.Profile.OnlyLink" target="_blank" rel="noopener noreferrer" class="btn btn--onlyfans">
+                    OnlyFans
+                </a>
             </div>
         }
     </div>
 
-    <div class="mt-8">
-        <a asp-page="/Chat/Index" asp-route-modelId="@Model.Profile.Id" class="btn btn--primary">
-            Написать
-        </a>
+    <div class="space-y-3">
+        @foreach (var post in Model.Profile.Posts.OrderByDescending(p => p.CreatedAt))
+        {
+            <div class="feed-post fade-in">
+                <img src="@post.ImageUrl" alt="Post" class="feed-post__image" />
+                <p class="feed-post__caption">@post.Caption</p>
+            </div>
+        }
     </div>
 </div>

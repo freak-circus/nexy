@@ -11,13 +11,23 @@
     <a href="/" class="navbar__brand">Nexy</a>
     <div class="navbar__links">
         <a href="/Feed" class="navbar__link">Фид</a>
-        <a href="/Admin/ModelList" class="navbar__link">Админка</a>
-        <a href="/Logout" class="navbar__link">Выйти</a>
+        <a href="/Profile" class="navbar__link">Профиль</a>
+        <a href="/Admin" class="navbar__link">Админка</a>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a href="/Identity/Account/Logout" class="navbar__link">Выйти</a>
+        }
+        else
+        {
+            <a href="/Identity/Account/Login" class="navbar__link">Войти</a>
+        }
     </div>
 </nav>
 
 <main>
     @RenderBody()
 </main>
+
+@RenderSection("Scripts", required: false)
 </body>
 </html>

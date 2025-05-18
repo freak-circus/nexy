@@ -1,13 +1,13 @@
 @page
 @model Nexy.Pages.FeedModel
 @{
-    Layout = "_Layout";
+Layout = "_Layout";
 }
 
 <div class="container">
-    <h2 class="text-2xl font-bold text-white mb-6">Лента</h2>
+    <h2 class="text-xl font-bold text-white mb-4">Лента</h2>
 
-    <div id="post-container" class="space-y-4">
+    <div id="post-container" class="space-y-3">
         <partial name="_FeedPostListPartial" model="Model.Posts" />
     </div>
 
@@ -24,7 +24,12 @@
             .then(response => response.text())
             .then(html => {
                 const container = document.getElementById("post-container");
-                container.insertAdjacentHTML("beforeend", html);
+                const tempDiv = document.createElement("div");
+                tempDiv.innerHTML = html;
+                Array.from(tempDiv.children).forEach(child => {
+                    child.classList.add("fade-in");
+                    container.appendChild(child);
+                });
                 loaded += 10;
             });
     });

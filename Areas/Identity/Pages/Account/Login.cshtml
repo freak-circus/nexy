@@ -1,0 +1,71 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Вход";
+    Layout = "_Layout";
+}
+
+<link rel="stylesheet" href="~/css/Login.css" asp-append-version="true" />
+
+<div class="login-container">
+    <div class="login-form fade-in">
+        <h2 class="login-form__title">Вход</h2>
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="login-form__error" role="alert"></div>
+            <div class="login-form__group">
+                <label asp-for="Input.Email" class="login-form__label">Электронная почта</label>
+                <input asp-for="Input.Email" class="login-form__input" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                <span asp-validation-for="Input.Email" class="login-form__error"></span>
+            </div>
+            <div class="login-form__group">
+                <label asp-for="Input.Password" class="login-form__label">Пароль</label>
+                <input asp-for="Input.Password" class="login-form__input" autocomplete="current-password" aria-required="true" placeholder="Пароль" />
+                <span asp-validation-for="Input.Password" class="login-form__error"></span>
+            </div>
+            <div class="login-form__group login-form__checkbox">
+                <label class="login-form__label">
+                    <input type="checkbox" asp-for="Input.RememberMe" class="login-form__checkbox-input" />
+                    Запомнить меня
+                </label>
+            </div>
+            <button type="submit" class="login-form__submit">Войти</button>
+        </form>
+
+        <div class="login-form__links">
+            <a asp-page="./ForgotPassword" class="login-form__link">Забыли пароль?</a>
+            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="login-form__link">Создать аккаунт</a>
+            <a asp-page="./ResendEmailConfirmation" class="login-form__link">Повторно отправить подтверждение</a>
+        </div>
+
+        @if (Model.ExternalLogins?.Count > 0)
+        {
+            <div class="login-form__external">
+                <h3 class="login-form__external-title">Войти через</h3>
+                <form asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                    <div class="login-form__external-buttons">
+                        @foreach (var provider in Model.ExternalLogins)
+                        {
+                            <button type="submit" class="login-form__external-button" name="provider" value="@provider.Name" title="Войти через @provider.DisplayName">
+                                @provider.DisplayName
+                            </button>
+                        }
+                    </div>
+                </form>
+            </div>
+        }
+        else
+        {
+            <div class="login-form__external">
+                <p class="login-form__external-text">
+                    Внешние сервисы авторизации не настроены. Подробности в
+                    <a href="https://go.microsoft.com/fwlink/?LinkID=532715" class="login-form__link">этой статье</a>.
+                </p>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
