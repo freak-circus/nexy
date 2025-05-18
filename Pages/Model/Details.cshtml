@@ -1,0 +1,32 @@
+@page "{id:guid}"
+@model Nexy.Pages.Model.DetailsModel
+@{
+    ViewData["Title"] = Model.Profile?.Name;
+}
+
+<div class="max-w-2xl mx-auto mt-8 text-white">
+    <div class="flex items-center space-x-4 mb-6">
+        <img src="@Model.Profile!.AvatarUrl" alt="Avatar" class="w-16 h-16 rounded-full" />
+        <div>
+            <h2 class="text-xl font-bold">@Model.Profile.Name</h2>
+            <p class="text-gray-300">@Model.Profile.Description</p>
+        </div>
+    </div>
+
+    <div class="space-y-6">
+        @foreach (var post in Model.Profile.Posts.OrderByDescending(p => p.CreatedAt))
+        {
+            <div class="bg-zinc-900 p-4 rounded-2xl shadow">
+                <img src="@post.ImageUrl" alt="Post" class="rounded-xl mb-2" />
+                <p>@post.Caption</p>
+            </div>
+        }
+    </div>
+
+    <div class="mt-8">
+        <a asp-page="/Chat/Index" asp-route-modelId="@Model.Profile.Id"
+           class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            Написать
+        </a>
+    </div>
+</div>

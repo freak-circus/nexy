@@ -1,0 +1,6 @@
+@model List<Nexy.Data.ModelPost>
+
+@foreach (var post in Model)
+{
+    <partial name="_FeedPostPartial" model="post" />
+}

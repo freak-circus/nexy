@@ -1,0 +1,31 @@
+@page
+@model Nexy.Pages.FeedModel
+@{
+    Layout = "_Layout";
+}
+
+<h2 class="text-white text-xl mb-4">Лента</h2>
+
+<div id="post-container">
+    <partial name="_FeedPostListPartial" model="Model.Posts" />
+</div>
+
+<button id="load-more"
+        class="block mx-auto mt-6 bg-neutral-800 text-white px-4 py-2 rounded-xl hover:bg-neutral-700">
+    Загрузить ещё
+</button>
+
+
+    <script>
+    let loaded = @Model.LoadedCount;
+
+    document.getElementById("load-more").addEventListener("click", function () {
+        fetch(`/Feed?handler=LoadMore&skip=${loaded}`)
+            .then(response => response.text())
+            .then(html => {
+                const container = document.getElementById("post-container");
+                container.insertAdjacentHTML("beforeend", html);
+                loaded += 10;
+            });
+    });
+</script>
