@@ -4,19 +4,19 @@
     Layout = "_Layout";
 }
 
-<h2 class="text-white text-xl mb-4">Лента</h2>
+<div class="container">
+    <h2 class="text-2xl font-bold text-white mb-6">Лента</h2>
 
-<div id="post-container">
-    <partial name="_FeedPostListPartial" model="Model.Posts" />
+    <div id="post-container" class="space-y-4">
+        <partial name="_FeedPostListPartial" model="Model.Posts" />
+    </div>
+
+    <button id="load-more" class="load-more">
+        Загрузить ещё
+    </button>
 </div>
 
-<button id="load-more"
-        class="block mx-auto mt-6 bg-neutral-800 text-white px-4 py-2 rounded-xl hover:bg-neutral-700">
-    Загрузить ещё
-</button>
-
-
-    <script>
+<script>
     let loaded = @Model.LoadedCount;
 
     document.getElementById("load-more").addEventListener("click", function () {
