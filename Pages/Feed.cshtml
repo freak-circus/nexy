@@ -12,23 +12,56 @@ Layout = "_Layout";
         </div>
         <button id="load-more" class="load-more pulse">Загрузить ещё</button>
     </div>
+
+    <div class="modal" id="imageModal">
+        <img class="modal__image" id="modalImage" src="" alt="Full image" />
+    </div>
 </div>
 
+@section Scripts {
 <script>
-    let loaded = @Model.LoadedCount;
+    document.addEventListener('DOMContentLoaded', function () {
+        // Модалка для изображений
+        const images = document.querySelectorAll('.feed-post__image');
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
 
-    document.getElementById("load-more").addEventListener("click", function () {
-        fetch(`/Feed?handler=LoadMore&skip=${loaded}`)
-            .then(response => response.text())
-            .then(html => {
-                const container = document.getElementById("post-container");
-                const tempDiv = document.createElement("div");
-                tempDiv.innerHTML = html;
-                Array.from(tempDiv.children).forEach(child => {
-                    child.classList.add("fade-in");
-                    container.appendChild(child);
-                });
-                loaded += 10;
+        images.forEach(image => {
+            image.addEventListener('click', function () {
+                modalImage.src = this.dataset.fullsrc;
+                modal.classList.add('active');
             });
+        });
+
+        modal.addEventListener('click', function () {
+            modal.classList.remove('active');
+        });
+
+        // Load More
+        let loaded = @Model.LoadedCount;
+        document.getElementById("load-more").addEventListener("click", function () {
+            fetch(`/Feed?handler=LoadMore&skip=${loaded}`)
+                .then(response => response.text())
+                .then(html => {
+                    const container = document.getElementById("post-container");
+                    const tempDiv = document.createElement("div");
+                    tempDiv.innerHTML = html;
+                    Array.from(tempDiv.children).forEach(child => {
+                        child.classList.add("fade-in");
+                        container.appendChild(child);
+                    });
+                    loaded += 10;
+
+                    // Перепривязка событий для новых изображений
+                    const newImages = container.querySelectorAll('.feed-post__image');
+                    newImages.forEach(image => {
+                        image.addEventListener('click', function () {
+                            modalImage.src = this.dataset.fullsrc;
+                            modal.classList.add('active');
+                        });
+                    });
+                });
+        });
     });
 </script>
+}

@@ -33,36 +33,8 @@
         </form>
 
         <div class="login-form__links">
-            <a asp-page="./ForgotPassword" class="login-form__link">Забыли пароль?</a>
             <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="login-form__link">Создать аккаунт</a>
-            <a asp-page="./ResendEmailConfirmation" class="login-form__link">Повторно отправить подтверждение</a>
         </div>
-
-        @if (Model.ExternalLogins?.Count > 0)
-        {
-            <div class="login-form__external">
-                <h3 class="login-form__external-title">Войти через</h3>
-                <form asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                    <div class="login-form__external-buttons">
-                        @foreach (var provider in Model.ExternalLogins)
-                        {
-                            <button type="submit" class="login-form__external-button" name="provider" value="@provider.Name" title="Войти через @provider.DisplayName">
-                                @provider.DisplayName
-                            </button>
-                        }
-                    </div>
-                </form>
-            </div>
-        }
-        else
-        {
-            <div class="login-form__external">
-                <p class="login-form__external-text">
-                    Внешние сервисы авторизации не настроены. Подробности в
-                    <a href="https://go.microsoft.com/fwlink/?LinkID=532715" class="login-form__link">этой статье</a>.
-                </p>
-            </div>
-        }
     </div>
 </div>
 

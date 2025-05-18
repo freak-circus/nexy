@@ -34,32 +34,6 @@
         <div class="register-form__links">
             <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" class="register-form__link">Уже есть аккаунт? Войти</a>
         </div>
-
-        @if (Model.ExternalLogins?.Count > 0)
-        {
-            <div class="register-form__external">
-                <h3 class="register-form__external-title">Зарегистрироваться через</h3>
-                <form asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                    <div class="register-form__external-buttons">
-                        @foreach (var provider in Model.ExternalLogins)
-                        {
-                            <button type="submit" class="register-form__external-button" name="provider" value="@provider.Name" title="Зарегистрироваться через @provider.DisplayName">
-                                @provider.DisplayName
-                            </button>
-                        }
-                    </div>
-                </form>
-            </div>
-        }
-        else
-        {
-            <div class="register-form__external">
-                <p class="register-form__external-text">
-                    Внешние сервисы авторизации не настроены. Подробности в
-                    <a href="https://go.microsoft.com/fwlink/?LinkID=532715" class="register-form__link">этой статье</a>.
-                </p>
-            </div>
-        }
     </div>
 </div>
 

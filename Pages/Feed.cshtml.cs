@@ -6,7 +6,6 @@ using Nexy.Data;
 
 namespace Nexy.Pages;
 
-[Authorize]
 public class FeedModel : PageModel
 {
     private readonly ApplicationDbContext _context;

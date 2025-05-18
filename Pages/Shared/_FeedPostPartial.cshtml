@@ -7,6 +7,31 @@
             <div class="feed-post__name">@Model.Model.Name</div>
         </a>
     </div>
-    <img src="@Model.ImageUrl" class="feed-post__image" alt="Post image" />
+    <img src="@Model.ImageUrl" class="feed-post__image" data-fullsrc="@Model.ImageUrl" alt="Post image" />
     <p class="feed-post__caption">@Model.Caption</p>
 </div>
+
+<div class="modal" id="imageModal">
+    <img class="modal__image" id="modalImage" src="" alt="Full image" />
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const images = document.querySelectorAll('.feed-post__image');
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+
+            images.forEach(image => {
+                image.addEventListener('click', function () {
+                    modalImage.src = this.dataset.fullsrc;
+                    modal.classList.add('active');
+                });
+            });
+
+            modal.addEventListener('click', function () {
+                modal.classList.remove('active');
+            });
+        });
+    </script>
+}
