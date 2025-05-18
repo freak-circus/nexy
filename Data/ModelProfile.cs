@@ -9,5 +9,6 @@ namespace Nexy.Data
         public bool IsActive { get; set; }
         public List<ModelPost> Posts { get; set; } = new();
         public List<UserMessage> Messages { get; set; } = new();
+        public string OnlyLink { get; set; } = string.Empty;
     }
 }
