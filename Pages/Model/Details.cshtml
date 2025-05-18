@@ -2,28 +2,41 @@
 @model Nexy.Pages.Model.DetailsModel
 @{
     ViewData["Title"] = Model.Profile?.Name;
+    // Генерация онлайна: 30% шанс
+    var isOnline = new Random().NextDouble() < 0.3;
 }
 
 <div class="container">
-    <div class="profile-card">
+    <div class="profile-card fade-in">
         <div class="profile-card__header">
             <img src="@Model.Profile!.AvatarUrl" alt="@Model.Profile.Name's avatar" class="profile-card__avatar" />
             <div>
-                <h2 class="profile-card__name">@Model.Profile.Name</h2>
+                <div class="profile-card__name-wrapper">
+                    <h2 class="profile-card__name">@Model.Profile.Name</h2>
+                    @if (isOnline)
+                    {
+                        <span class="online-indicator">Онлайн</span>
+                    }
+                    else
+                    {
+                        <span class="offline-text">Недавно в сети</span>
+                    }
+                </div>
                 <p class="profile-card__description">@Model.Profile.Description</p>
             </div>
-        </div>
-        @if (!string.IsNullOrEmpty(Model.Profile.OnlyLink))
-        {
-            <div class="profile-card__actions">
-                <a href="@Model.Profile.OnlyLink" target="_blank" rel="noopener noreferrer" class="btn btn--onlyfans">
-                    OnlyFans
-                </a>
+            <div class="profile-card__actions" style="margin-left: auto;">
+                @if (!string.IsNullOrEmpty(Model.Profile.OnlyLink))
+                {
+                    <a href="@Model.Profile.OnlyLink" target="_blank" rel="noopener noreferrer" class="btn btn--onlyfans">
+                        OnlyFans
+                    </a>
+                }
+                <button class="btn btn--chat" disabled>Чат</button>
             </div>
-        }
+        </div>
     </div>
 
-    <div class="space-y-3">
+    <div class="space-y-4">
         @foreach (var post in Model.Profile.Posts.OrderByDescending(p => p.CreatedAt))
         {
             <div class="feed-post fade-in">
