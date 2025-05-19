@@ -8,5 +8,7 @@ namespace Nexy.Data
         public string ImageUrl { get; set; } = string.Empty;
         public string Caption { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
+        public int LikesCount { get; set; } = new Random().Next(500, 10000);
+        public List<Guid>? RealLikes { get; set; }
     }
 }
