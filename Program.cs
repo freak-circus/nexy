@@ -16,35 +16,6 @@ builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
-// 🔐 Назначение роли "Admin" пользователю tony@stark.com
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
-    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-
-    var roleName = "Admin";
-
-    // Создаём роль Admin, если её ещё нет
-    var roleExists = await roleManager.RoleExistsAsync(roleName);
-    if (!roleExists)
-    {
-        await roleManager.CreateAsync(new IdentityRole(roleName));
-    }
-
-    // Назначаем роль пользователю
-    var user = await userManager.FindByEmailAsync("tony@stark.com");
-    if (user != null && !await userManager.IsInRoleAsync(user, roleName))
-    {
-        await userManager.AddToRoleAsync(user, roleName);
-        Console.WriteLine("Роль 'Admin' успешно выдана пользователю tony@stark.com");
-    }
-    else if (user == null)
-    {
-        Console.WriteLine("Пользователь tony@stark.com не найден");
-    }
-}
-
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
