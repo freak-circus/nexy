@@ -10,5 +10,6 @@ namespace Nexy.Data
         public DateTime CreatedAt { get; set; }
         public int LikesCount { get; set; } = new Random().Next(500, 10000);
         public List<Guid>? RealLikes { get; set; }
+        public bool IsNsfw { get; set; }
     }
 }

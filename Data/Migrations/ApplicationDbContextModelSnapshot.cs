@@ -240,6 +240,9 @@ namespace Nexy.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("IsNsfw")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("LikesCount")
                         .HasColumnType("integer");
 

@@ -18,6 +18,13 @@ namespace Nexy.Migrations
                 type: "uuid[]",
                 nullable: true);
 
+            migrationBuilder.AddColumn<bool>(
+                name: "IsNsfw",
+                table: "ModelPosts",
+                type: "boolean",
+                nullable: false,
+                defaultValue: false);
+
             migrationBuilder.AddColumn<int>(
                 name: "LikesCount",
                 table: "ModelPosts",
@@ -38,6 +45,10 @@ namespace Nexy.Migrations
             migrationBuilder.DropColumn(
                 name: "RealFollowers",
                 table: "ModelProfiles");
+
+            migrationBuilder.DropColumn(
+                name: "IsNsfw",
+                table: "ModelPosts");
 
             migrationBuilder.DropColumn(
                 name: "LikesCount",

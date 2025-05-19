@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Nexy.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250519064110_InitialWithLikesAndSubs")]
+    [Migration("20250519064953_InitialWithLikesAndSubs")]
     partial class InitialWithLikesAndSubs
     {
         /// <inheritdoc />
@@ -242,6 +242,9 @@ namespace Nexy.Migrations
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsNsfw")
+                        .HasColumnType("boolean");
 
                     b.Property<int>("LikesCount")
                         .HasColumnType("integer");
