@@ -2,10 +2,13 @@
 
 <div class="feed-post fade-in">
     <div class="feed-post__header">
-        <a asp-page="/Model/Details" asp-route-id="@Model.Model.Id" class="feed-post__user">
-            <img src="@Model.Model.AvatarUrl" class="feed-post__avatar" alt="@Model.Model.Name's avatar" />
-            <div class="feed-post__name">@Model.Model.Name</div>
-        </a>
+        @if (!Model.IsNsfw)
+        {
+            <a asp-page="/Model/Details" asp-route-id="@Model.Model.Id" class="feed-post__user">
+                <img src="@Model.Model.AvatarUrl" class="feed-post__avatar" alt="@Model.Model.Name's avatar"/>
+                <div class="feed-post__name">@Model.Model.Name</div>
+            </a>
+        }
     </div>
     <img src="@Model.ImageUrl" class="feed-post__image" data-fullsrc="@Model.ImageUrl" alt="Post image" />
     <p class="feed-post__caption">@Model.Caption</p>

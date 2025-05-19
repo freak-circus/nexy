@@ -1,33 +1,30 @@
 @page
 @model Nexy.Pages.Admin.EditPostsModel
 @{
-    ViewData["Title"] = "Редактирование постов";
+    ViewData["Title"] = $"Редактирование постов — {Model.ModelName}";
 }
 
-<h2>Посты модели @Model.ModelName</h2>
+<h1>Редактирование постов: @Model.ModelName</h1>
 
-@foreach (var post in Model.Posts)
-{
-    <form method="post" asp-page-handler="Update" class="post-form">
-        <input type="hidden" name="postId" value="@post.Id" />
-        <div>
-            <label>Caption:</label>
-            <input type="text" name="caption" value="@post.Caption" class="input"/>
-        </div>
-        <div>
+<form method="post" asp-page-handler="UpdateAll">
+    @for (int i = 0; i < Model.Posts.Count; i++)
+    {
+        <div class="post-editor">
+            <input type="hidden" name="PostsInput[@i].Id" value="@Model.Posts[i].Id" />
+
             <label>Image URL:</label>
-            <input type="text" name="imageUrl" value="@post.ImageUrl" class="input"/>
-        </div>
-        <div>
-            <img src="@post.ImageUrl" alt="img" style="max-width:200px; border-radius:10px;" />
-        </div>
-        <button type="submit" class="btn">Обновить</button>
-    </form>
+            <input type="text" name="PostsInput[@i].ImageUrl" value="@Model.Posts[i].ImageUrl" />
 
-    <form method="post" asp-page-handler="Delete" style="display:inline;">
-        <input type="hidden" name="postId" value="@post.Id" />
-        <button type="submit" class="btn delete">Удалить</button>
-    </form>
+            <label>Caption:</label>
+            <textarea name="PostsInput[@i].Caption">@Model.Posts[i].Caption</textarea>
 
-    <hr/>
-}
+            <label>NSFW:</label>
+            <input type="checkbox" name="PostsInput[@i].IsNsfw" value="true" @(Model.Posts[i].IsNsfw ? "checked" : "") />
+            <input type="hidden" name="PostsInput[@i].IsNsfw" value="false" />
+
+            <hr />
+        </div>
+    }
+
+    <button type="submit">Сохранить все</button>
+</form>

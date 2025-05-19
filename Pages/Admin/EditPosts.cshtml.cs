@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Nexy.Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace Nexy.Pages.Admin;
 
@@ -10,8 +11,13 @@ namespace Nexy.Pages.Admin;
 public class EditPostsModel : PageModel
 {
     private readonly ApplicationDbContext _context;
+    private readonly ILogger<EditPostsModel> _logger;
 
-    public EditPostsModel(ApplicationDbContext context) => _context = context;
+    public EditPostsModel(ApplicationDbContext context, ILogger<EditPostsModel> logger)
+    {
+        _context = context;
+        _logger = logger;
+    }
 
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; } // ModelId
@@ -20,13 +26,20 @@ public class EditPostsModel : PageModel
 
     public List<ModelPost> Posts { get; set; } = new();
 
+    [BindProperty]
+    public List<PostInput> PostsInput { get; set; } = new();
+
     public async Task<IActionResult> OnGetAsync()
     {
         var model = await _context.ModelProfiles
             .Include(m => m.Posts)
             .FirstOrDefaultAsync(m => m.Id == Id);
 
-        if (model == null) return NotFound();
+        if (model == null)
+        {
+            _logger.LogWarning("Model not found for Id: {Id}", Id);
+            return NotFound();
+        }
 
         ModelName = model.Name;
         Posts = model.Posts.OrderByDescending(p => p.CreatedAt).ToList();
@@ -42,20 +55,49 @@ public class EditPostsModel : PageModel
             _context.ModelPosts.Remove(post);
             await _context.SaveChangesAsync();
         }
+        else
+        {
+            _logger.LogWarning("Post not found for deletion: {PostId}", postId);
+        }
 
         return RedirectToPage(new { Id });
     }
 
-    public async Task<IActionResult> OnPostUpdateAsync(Guid postId, string caption, string imageUrl)
+    public async Task<IActionResult> OnPostUpdateAllAsync()
     {
-        var post = await _context.ModelPosts.FindAsync(postId);
-        if (post != null)
+        try
         {
-            post.Caption = caption;
-            post.ImageUrl = imageUrl;
-            await _context.SaveChangesAsync();
-        }
+            foreach (var input in PostsInput)
+            {
+                var post = await _context.ModelPosts.FindAsync(input.Id);
+                if (post != null)
+                {
+                    post.Caption = input.Caption ?? string.Empty;
+                    post.ImageUrl = input.ImageUrl ?? string.Empty;
+                    post.IsNsfw = input.IsNsfw;
+                }
+                else
+                {
+                    _logger.LogWarning("Post not found for update: {PostId}", input.Id);
+                }
+            }
 
-        return RedirectToPage(new { Id });
+            await _context.SaveChangesAsync();
+            return RedirectToPage(new { Id });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating posts");
+            ModelState.AddModelError("", "Ошибка при обновлении постов. Попробуйте снова.");
+            return await OnGetAsync();
+        }
+    }
+
+    public class PostInput
+    {
+        public Guid Id { get; set; }
+        public string Caption { get; set; } = string.Empty;
+        public string ImageUrl { get; set; } = string.Empty;
+        public bool IsNsfw { get; set; }
     }
 }
