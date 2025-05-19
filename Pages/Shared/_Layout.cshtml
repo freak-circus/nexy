@@ -7,19 +7,32 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
-<nav class="navbar">
-    <a href="/" class="navbar__brand">nexy</a>
-    <div class="navbar__links">
-        @if (User.Identity.IsAuthenticated)
+<nav class="navbar" style="position: relative; height: 60px;">
+    <a href="/" class="navbar__brand"
+       style="position: absolute; left: 50%; transform: translateX(-50%);
+              font-size: 2rem; font-weight: 900; color: #E50914;
+              text-transform: uppercase; text-shadow: 2px 2px 4px rgba(0,0,0,0.75);
+              font-family: 'Arial Black', sans-serif; line-height: 60px;">
+        NEXY
+    </a>
+
+    <div class="navbar__links"
+         style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%);
+                min-width: 80px; text-align: right;">
+        @if (!User.Identity.IsAuthenticated)
         {
-            <a href="/Identity/Account/Logout" class="navbar__link">Log Out</a>
+            <a href="/Identity/Account/Login" class="navbar__link"
+               style="color: #E7E9EA; font-weight: 600; text-decoration: none;">
+                Log In
+            </a>
         }
         else
         {
-            <a href="/Identity/Account/Login" class="navbar__link">Log In</a>
+            <a style="visibility: hidden;">Log In</a> <!-- сохраняем место -->
         }
     </div>
 </nav>
+
 
 <main>
     @RenderBody()
@@ -27,4 +40,22 @@
 
 @RenderSection("Scripts", required: false)
 </body>
+
+<footer style="text-align: center; padding: 2rem 1rem; background-color: #111; color: #E7E9EA;
+                font-family: 'Arial', sans-serif; font-size: 0.9rem; letter-spacing: 1px;">
+    <p style="margin: 0 0 1rem 0; font-weight: 500;">
+        Nexy — a new era in the evolution of the modeling industry.
+    </p>
+
+    <nav style="margin-bottom: 1rem;">
+        <a href="/terms" style="color: #E7E9EA; text-decoration: none; margin: 0 1rem;">Terms of Service</a>
+        <a href="/privacy" style="color: #E7E9EA; text-decoration: none; margin: 0 1rem;">Privacy Policy</a>
+        <a href="/about" style="color: #E7E9EA; text-decoration: none; margin: 0 1rem;">About</a>
+    </nav>
+
+    <p style="margin: 0; font-size: 0.8rem; color: #888;">
+        © 2025 Nexy. All rights reserved.
+    </p>
+</footer>
+
 </html>

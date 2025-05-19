@@ -12,14 +12,7 @@ var isOnline = new Random().NextDouble() < 0.3;
             <div>
                 <div class="profile-card__name-wrapper">
                     <h2 class="profile-card__name">@Model.Profile.Name</h2>
-                    @if (isOnline)
-                    {
-                    <span class="online-indicator">Online</span>
-                    }
-                    else
-                    {
                     <span class="offline-text">Recently Online</span>
-                    }
                 </div>
                 <p class="profile-card__description">@Model.Profile.Description</p>
                 <div class="profile-card__actions">

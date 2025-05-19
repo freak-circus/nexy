@@ -6,7 +6,6 @@ Layout = "_Layout";
 
 <div class="container">
     <div class="feed">
-        <h2 class="feed__title">Feed</h2>
         @if (!User.Identity.IsAuthenticated)
         {
         <div class="feed__notice">
@@ -16,7 +15,10 @@ Layout = "_Layout";
         <div id="post-container" class="space-y-4">
             <partial name="_FeedPostListPartial" model="Model.Posts" />
         </div>
-        <button id="load-more" class="load-more pulse">Load More</button>
+        <button id="load-more" class="load-more pulse"
+                style="display: block; margin: 1rem auto; padding: 1rem 2rem; font-size: 1.25rem; cursor: pointer;">
+            Load More
+        </button>
     </div>
 
     <div class="modal" id="imageModal">

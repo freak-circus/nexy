@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Nexy.Pages.Admin;
 
-[Authorize]
+[Authorize(Roles = "Admin")]
 public class EditPostsModel : PageModel
 {
     private readonly ApplicationDbContext _context;

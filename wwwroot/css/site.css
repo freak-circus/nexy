@@ -65,13 +65,19 @@ a:focus {
 }
 
 .navbar__brand {
-    font-size: 1.75rem;
+    font-size: 2rem;
     font-weight: 900;
-    color: #E7E9EA;
-    letter-spacing: 1px;
-    text-shadow: 0 0 8px rgba(29, 155, 240, 0.3);
+    color: #E50914; /* красный Netflix */
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.75);
     transition: transform 0.2s ease;
+    display: block;
+    margin: auto;
+    cursor: pointer;
+    font-family: 'Arial Black', 'Helvetica Neue', sans-serif;
 }
+
 
 .navbar__brand:hover {
     transform: scale(1.05);

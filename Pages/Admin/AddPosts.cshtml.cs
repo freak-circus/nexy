@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Nexy.Pages.Admin;
 
-[Authorize]
+[Authorize(Roles = "Admin")]
 public class AddPostsModel : PageModel
 {
     private readonly ApplicationDbContext _context;
