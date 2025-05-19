@@ -1,6 +1,34 @@
-@model List<Nexy.Data.ModelPost>
+@model IEnumerable<Nexy.Data.ModelPost>
 
 @foreach (var post in Model)
 {
-    <partial name="_FeedPostPartial" model="post" />
+    @if (!post.IsNsfw || User.Identity.IsAuthenticated)
+    {
+        <div class="feed-post fade-in">
+            <div class="feed-post__header">
+                <a asp-page="/Model/Details" asp-route-id="@post.Model.Id" class="feed-post__user">
+                    <img src="@post.Model.AvatarUrl" class="feed-post__avatar" alt="@post.Model.Name's avatar" />
+                    <div class="feed-post__name">@post.Model.Name</div>
+                </a>
+            </div>
+            <div class="feed-post__image-wrapper">
+                <div class="feed-post__image-background" style="background-image: url('@post.ImageUrl');"></div>
+                <img src="@post.ImageUrl" class="feed-post__image" data-fullsrc="@post.ImageUrl" alt="Post image" />
+            </div>
+            @if (post.IsNsfw && User.Identity.IsAuthenticated)
+            {
+                <span class="feed-post__nsfw-badge">NSFW</span>
+            }
+            <p class="feed-post__caption">@post.Caption</p>
+            <div class="feed-post__meta">
+                <button class="btn btn--like" disabled data-tooltip="Likes are disabled for new or unauthorized users">
+                    <span>@post.LikesCount</span>
+                </button>
+                <div class="feed-post__stats fade-in">
+                    <span class="feed-post__stat feed-post__stat--views">@((post.LikesCount * 89 + 19).ToString("N0"))</span>
+                    <span class="feed-post__stat feed-post__stat--downloads">@((post.LikesCount / 3 + 5).ToString("N0"))</span>
+                </div>
+            </div>
+        </div>
+    }
 }

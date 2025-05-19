@@ -2,7 +2,7 @@
 @model RegisterModel
 
 @{
-    ViewData["Title"] = "Регистрация";
+    ViewData["Title"] = "Registration";
     Layout = "_Layout";
 }
 
@@ -10,29 +10,29 @@
 
 <div class="register-container">
     <div class="register-form fade-in">
-        <h2 class="register-form__title">Регистрация</h2>
+        <h2 class="register-form__title">Registration</h2>
         <form method="post" asp-route-returnUrl="@Model.ReturnUrl">
             <div asp-validation-summary="ModelOnly" class="register-form__error" role="alert"></div>
             <div class="register-form__group">
-                <label asp-for="Input.Email" class="register-form__label">Электронная почта</label>
+                <label asp-for="Input.Email" class="register-form__label">Email</label>
                 <input asp-for="Input.Email" class="register-form__input" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                 <span asp-validation-for="Input.Email" class="register-form__error"></span>
             </div>
             <div class="register-form__group">
-                <label asp-for="Input.Password" class="register-form__label">Пароль</label>
-                <input asp-for="Input.Password" class="register-form__input" autocomplete="new-password" aria-required="true" placeholder="Пароль" />
+                <label asp-for="Input.Password" class="register-form__label">Password</label>
+                <input asp-for="Input.Password" class="register-form__input" autocomplete="new-password" aria-required="true" placeholder="Password" />
                 <span asp-validation-for="Input.Password" class="register-form__error"></span>
             </div>
             <div class="register-form__group">
-                <label asp-for="Input.ConfirmPassword" class="register-form__label">Подтверждение пароля</label>
-                <input asp-for="Input.ConfirmPassword" class="register-form__input" autocomplete="new-password" aria-required="true" placeholder="Подтверждение пароля" />
+                <label asp-for="Input.ConfirmPassword" class="register-form__label">Confirm Password</label>
+                <input asp-for="Input.ConfirmPassword" class="register-form__input" autocomplete="new-password" aria-required="true" placeholder="Confirm Password" />
                 <span asp-validation-for="Input.ConfirmPassword" class="register-form__error"></span>
             </div>
-            <button type="submit" class="register-form__submit">Зарегистрироваться</button>
+            <button type="submit" class="register-form__submit">Register</button>
         </form>
 
         <div class="register-form__links">
-            <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" class="register-form__link">Уже есть аккаунт? Войти</a>
+            <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" class="register-form__link">Already have an account? Log In</a>
         </div>
     </div>
 </div>

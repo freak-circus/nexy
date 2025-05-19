@@ -1,40 +1,56 @@
 @model Nexy.Data.ModelPost
 
+@if (!Model.IsNsfw || User.Identity.IsAuthenticated)
+{
 <div class="feed-post fade-in">
     <div class="feed-post__header">
-        @if (!Model.IsNsfw)
-        {
-            <a asp-page="/Model/Details" asp-route-id="@Model.Model.Id" class="feed-post__user">
-                <img src="@Model.Model.AvatarUrl" class="feed-post__avatar" alt="@Model.Model.Name's avatar"/>
-                <div class="feed-post__name">@Model.Model.Name</div>
-            </a>
-        }
+        <a asp-page="/Model/Details" asp-route-id="@Model.Model.Id" class="feed-post__user">
+            <img src="@Model.Model.AvatarUrl" class="feed-post__avatar" alt="@Model.Model.Name's avatar" />
+            <div class="feed-post__name">@Model.Model.Name</div>
+        </a>
     </div>
-    <img src="@Model.ImageUrl" class="feed-post__image" data-fullsrc="@Model.ImageUrl" alt="Post image" />
+    <div class="feed-post__image-wrapper">
+        <div class="feed-post__image-background" style="background-image: url('@Model.ImageUrl');"></div>
+        <img src="@Model.ImageUrl" class="feed-post__image" data-fullsrc="@Model.ImageUrl" alt="Post image" />
+    </div>
+    @if (Model.IsNsfw && User.Identity.IsAuthenticated)
+    {
+    <span class="feed-post__nsfw-badge">NSFW</span>
+    }
     <p class="feed-post__caption">@Model.Caption</p>
+    <div class="feed-post__meta">
+        <button class="btn btn--like" disabled data-tooltip="Likes are disabled for new or unauthorized users">
+            <span>@Model.LikesCount</span>
+        </button>
+        <div class="feed-post__stats fade-in">
+            <span class="feed-post__stat feed-post__stat--views">@((Model.LikesCount * 89 + 19).ToString("N0"))</span>
+            <span class="feed-post__stat feed-post__stat--downloads">@((Model.LikesCount / 3 + 5).ToString("N0"))</span>
+        </div>
+    </div>
 </div>
 
 <div class="modal" id="imageModal">
     <img class="modal__image" id="modalImage" src="" alt="Full image" />
 </div>
+}
 
 @section Scripts {
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const images = document.querySelectorAll('.feed-post__image');
-            const modal = document.getElementById('imageModal');
-            const modalImage = document.getElementById('modalImage');
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const images = document.querySelectorAll('.feed-post__image');
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
 
-            images.forEach(image => {
-                image.addEventListener('click', function () {
-                    modalImage.src = this.dataset.fullsrc;
-                    modal.classList.add('active');
-                });
-            });
-
-            modal.addEventListener('click', function () {
-                modal.classList.remove('active');
+        images.forEach(image => {
+            image.addEventListener('click', function () {
+                modalImage.src = this.dataset.fullsrc;
+                modal.classList.add('active');
             });
         });
-    </script>
+
+        modal.addEventListener('click', function () {
+            modal.classList.remove('active');
+        });
+    });
+</script>
 }

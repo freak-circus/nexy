@@ -6,11 +6,17 @@ Layout = "_Layout";
 
 <div class="container">
     <div class="feed">
-        <h2 class="feed__title">Лента</h2>
+        <h2 class="feed__title">Feed</h2>
+        @if (!User.Identity.IsAuthenticated)
+        {
+        <div class="feed__notice">
+            NSFW content is only available to authorized users. <a href="/Identity/Account/Login">Log in</a> to view.
+        </div>
+        }
         <div id="post-container" class="space-y-4">
             <partial name="_FeedPostListPartial" model="Model.Posts" />
         </div>
-        <button id="load-more" class="load-more pulse">Загрузить ещё</button>
+        <button id="load-more" class="load-more pulse">Load More</button>
     </div>
 
     <div class="modal" id="imageModal">
@@ -21,7 +27,7 @@ Layout = "_Layout";
 @section Scripts {
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Модалка для изображений
+        // Modal for images
         const images = document.querySelectorAll('.feed-post__image');
         const modal = document.getElementById('imageModal');
         const modalImage = document.getElementById('modalImage');
@@ -52,7 +58,7 @@ Layout = "_Layout";
                     });
                     loaded += 10;
 
-                    // Перепривязка событий для новых изображений
+                    // Rebind image click events
                     const newImages = container.querySelectorAll('.feed-post__image');
                     newImages.forEach(image => {
                         image.addEventListener('click', function () {

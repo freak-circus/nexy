@@ -1,4 +1,4 @@
-/* === Базовый сброс === */
+/* === Base Reset === */
 * {
     margin: 0;
     padding: 0;
@@ -14,7 +14,7 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* === Стили скроллбара === */
+/* === Scrollbar Styles === */
 ::-webkit-scrollbar {
     width: 8px;
 }
@@ -32,7 +32,7 @@ body {
     background: #4A4A4A;
 }
 
-/* === Ссылки === */
+/* === Links === */
 a {
     color: #1D9BF0;
     text-decoration: none;
@@ -119,7 +119,7 @@ a:focus {
     }
 }
 
-/* === Контейнер === */
+/* === Container === */
 .container {
     max-width: 100%;
     padding: 16px;
@@ -145,7 +145,7 @@ a:focus {
     }
 }
 
-/* === Фид === */
+/* === Feed === */
 .feed {
     margin-top: 24px;
 }
@@ -160,14 +160,30 @@ a:focus {
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
 }
 
+.feed__notice {
+    background: linear-gradient(90deg, #4B5563 0%, #6B7280 100%);
+    color: #E7E9EA;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
 @media (max-width: 640px) {
     .feed__title {
         font-size: 1.5rem;
         margin-bottom: 16px;
     }
+    .feed__notice {
+        font-size: 0.875rem;
+        padding: 10px 12px;
+    }
 }
 
-/* === Пост в фиде === */
+/* === Post in Feed === */
 .feed-post {
     background: #101112;
     border: 1px solid #2F3336;
@@ -175,6 +191,7 @@ a:focus {
     padding: 16px;
     margin-bottom: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    position: relative;
 }
 
 .feed-post__header {
@@ -209,13 +226,37 @@ a:focus {
     color: #E7E9EA;
 }
 
-.feed-post__image {
+.feed-post__image-wrapper {
+    position: relative;
     width: 100%;
-    max-height: 600px;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.feed-post__image-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    filter: blur(10px);
+    z-index: 0;
+}
+
+.feed-post__image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
     border-radius: 12px;
-    margin-bottom: 12px;
     cursor: pointer;
+    z-index: 1;
 }
 
 .feed-post__caption {
@@ -228,6 +269,63 @@ a:focus {
     display: flex;
     gap: 12px;
     justify-content: flex-end;
+}
+
+.feed-post__meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.875rem;
+    color: #6B7280;
+}
+
+.feed-post__stats {
+    display: flex;
+    gap: 12px;
+    font-size: 0.875rem;
+    color: #6B7280;
+}
+
+.feed-post__stat {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    background: #1A1A1A;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.feed-post__stat--views::before {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="%236B7280" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>') no-repeat center;
+    background-size: contain;
+}
+
+.feed-post__stat--downloads::before {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="%236B7280" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>') no-repeat center;
+    background-size: contain;
+}
+
+.feed-post__nsfw-badge {
+    position: absolute;
+    top: 28px;
+    right: 28px;
+    background: rgba(220, 38, 38, 0.8);
+    color: #FFFFFF;
+    font-size: 0.875rem;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 @media (max-width: 640px) {
@@ -245,9 +343,28 @@ a:focus {
     .feed-post__caption {
         font-size: 0.875rem;
     }
+    .feed-post__meta {
+        font-size: 0.75rem;
+    }
+    .feed-post__stats {
+        font-size: 0.75rem;
+        gap: 8px;
+    }
+    .feed-post__stat {
+        padding: 3px 6px;
+    }
+    .feed-post__stat::before {
+        width: 14px;
+        height: 14px;
+    }
+    .feed-post__nsfw-badge {
+        top: 24px;
+        right: 24px;
+        font-size: 0.75rem;
+    }
 }
 
-/* === Профиль === */
+/* === Profile === */
 .profile-card {
     background: linear-gradient(135deg, #101112 0%, #1A1A1A 100%);
     border: 1px solid #2F3336;
@@ -295,11 +412,14 @@ a:focus {
 .profile-card__description {
     font-size: 1.125rem;
     color: #D1D4D6;
+    margin-bottom: 16px;
 }
 
 .profile-card__actions {
     display: flex;
-    gap: 12px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 @media (max-width: 640px) {
@@ -321,7 +441,7 @@ a:focus {
     }
 }
 
-/* === Индикатор онлайна === */
+/* === Online Indicator === */
 .online-indicator {
     display: flex;
     align-items: center;
@@ -358,17 +478,16 @@ a:focus {
     }
 }
 
-/* === Кнопки === */
+/* === Buttons === */
 .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    border-radius: 9999px;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    padding: 12px 24px;
-    font-size: 1.125rem;
+    font-size: 0.875rem;
+    position: relative;
 }
 
 .btn--onlyfans {
@@ -376,6 +495,8 @@ a:focus {
     color: #FFFFFF;
     box-shadow: 0 0 12px rgba(0, 175, 240, 0.5);
     animation: pulse-onlyfans 2s infinite;
+    border-radius: 9999px;
+    padding: 6px 12px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -393,78 +514,96 @@ a:focus {
     transform: scale(0.95);
 }
 
-.btn--chat {
-    background: #2F3336;
+.btn--chat,
+.btn--subscribe,
+.btn--like,
+.load-more {
+    border: 2px solid #2F3336;
+    background: none;
     color: #6B7280;
+    border-radius: 9999px;
+    padding: 6px 12px;
     cursor: not-allowed;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 20px;
 }
 
 .btn--chat::before {
     content: '';
     display: inline-block;
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="%236B7280" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>') no-repeat center;
     background-size: contain;
 }
 
-.btn--chat:focus {
+.btn--like::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="%236B7280" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>') no-repeat center;
+    background-size: contain;
+}
+
+.load-more:not(:disabled) {
+    cursor: pointer;
+    animation: pulse 2s infinite;
+}
+
+.btn--chat:focus,
+.btn--like:focus,
+.btn--subscribe:focus,
+.load-more:focus {
     outline: 2px solid #4A4A4A;
     outline-offset: 2px;
 }
 
+/* === Tooltip === */
+.btn--chat:hover::after,
+.btn--like:hover::after,
+.btn--subscribe:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1A1A1A;
+    color: #E7E9EA;
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+
 @media (max-width: 640px) {
     .btn {
-        padding: 10px 16px;
-        font-size: 0.875rem;
+        font-size: 0.75rem;
     }
     .btn--chat::before {
-        width: 16px;
-        height: 16px;
+        width: 14px;
+        height: 14px;
     }
-}
-
-/* === Кнопка Load More === */
-.load-more {
-    display: block;
-    margin: 24px auto;
-    background: linear-gradient(90deg, #1D9BF0 0%, #3B82F6 100%);
-    color: #FFFFFF;
-    padding: 14px 32px;
-    font-size: 1.25rem;
-    font-weight: 700;
-    border: none;
-    border-radius: 9999px;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.load-more:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 16px rgba(29, 155, 240, 0.5);
-}
-
-.load-more:focus {
-    outline: 2px solid #1D9BF0;
-    outline-offset: 2px;
-}
-
-.load-more:active {
-    transform: scale(0.95);
-}
-
-@media (max-width: 640px) {
+    .btn--like::before {
+        width: 18px;
+        height: 18px;
+    }
+    .btn--onlyfans,
+    .btn--chat,
+    .btn--subscribe,
     .load-more {
-        padding: 12px 24px;
-        font-size: 1rem;
+        padding: 5px 10px;
+    }
+    .btn--chat:hover::after,
+    .btn--like:hover::after,
+    .btn--subscribe:hover::after {
+        font-size: 0.625rem;
+        padding: 4px 8px;
     }
 }
 
-/* === Модальное окно === */
+/* === Modal Window === */
 .modal {
     display: none;
     position: fixed;
@@ -499,7 +638,7 @@ a:focus {
     }
 }
 
-/* === Анимации === */
+/* === Animations === */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
@@ -515,13 +654,9 @@ a:focus {
     100% { box-shadow: 0 0 0 0 rgba(29, 155, 240, 0); }
 }
 
-.pulse {
-    animation: pulse 2s infinite;
-}
-
 @keyframes pulse-onlyfans {
     0% { box-shadow: 0 0 12px rgba(0, 175, 240, 0.5); }
-    50% { box-shadow: 0 0 20px rgba(0, 175, 240, 0.8); }
+    50% { box-shadow: 0 0 20px rgba(0, 175, 240, 0.7); }
     100% { box-shadow: 0 0 12px rgba(0, 175, 240, 0.5); }
 }
 

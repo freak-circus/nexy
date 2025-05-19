@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,11 +12,11 @@
     <div class="navbar__links">
         @if (User.Identity.IsAuthenticated)
         {
-            <a href="/Identity/Account/Logout" class="navbar__link">Выйти</a>
+            <a href="/Identity/Account/Logout" class="navbar__link">Log Out</a>
         }
         else
         {
-            <a href="/Identity/Account/Login" class="navbar__link">Войти</a>
+            <a href="/Identity/Account/Login" class="navbar__link">Log In</a>
         }
     </div>
 </nav>

@@ -1,9 +1,8 @@
 @page "{id:guid}"
 @model Nexy.Pages.Model.DetailsModel
 @{
-    ViewData["Title"] = Model.Profile?.Name;
-    // Генерация онлайна: 30% шанс
-    var isOnline = new Random().NextDouble() < 0.3;
+ViewData["Title"] = Model.Profile?.Name;
+var isOnline = new Random().NextDouble() < 0.3;
 }
 
 <div class="container">
@@ -15,23 +14,24 @@
                     <h2 class="profile-card__name">@Model.Profile.Name</h2>
                     @if (isOnline)
                     {
-                        <span class="online-indicator">Онлайн</span>
+                    <span class="online-indicator">Online</span>
                     }
                     else
                     {
-                        <span class="offline-text">Недавно в сети</span>
+                    <span class="offline-text">Recently Online</span>
                     }
                 </div>
                 <p class="profile-card__description">@Model.Profile.Description</p>
-            </div>
-            <div class="profile-card__actions" style="margin-left: auto;">
-                @if (!string.IsNullOrEmpty(Model.Profile.OnlyLink))
-                {
+                <div class="profile-card__actions">
+                    @if (!string.IsNullOrEmpty(Model.Profile.OnlyLink))
+                    {
                     <a href="@Model.Profile.OnlyLink" target="_blank" rel="noopener noreferrer" class="btn btn--onlyfans">
                         OnlyFans
                     </a>
-                }
-                <button class="btn btn--chat" disabled>Чат</button>
+                    }
+                    <button class="btn btn--subscribe" disabled data-tooltip="Subscriptions are disabled for new or unauthorized users">Subscribe</button>
+                    <button class="btn btn--chat" disabled data-tooltip="Chat is disabled for new or unauthorized users">Chat</button>
+                </div>
             </div>
         </div>
     </div>
@@ -39,10 +39,31 @@
     <div class="space-y-4">
         @foreach (var post in Model.Profile.Posts.OrderByDescending(p => p.CreatedAt))
         {
+        @if (!post.IsNsfw || User.Identity.IsAuthenticated)
+        {
             <div class="feed-post fade-in">
-                <img src="@post.ImageUrl" alt="Post" class="feed-post__image" data-fullsrc="@post.ImageUrl" />
+                
+                <div class="feed-post__image-wrapper">
+                    
+                    <div class="feed-post__image-background" style="background-image: url('@post.ImageUrl');"></div>
+                    <img src="@post.ImageUrl" alt="Post" class="feed-post__image" data-fullsrc="@post.ImageUrl"/>
+                </div>
+                @if (post.IsNsfw && User.Identity.IsAuthenticated)
+                {
+                    <span class="feed-post__nsfw-badge" style="z-index: 9999;">NSFW</span>
+                }
                 <p class="feed-post__caption">@post.Caption</p>
+                <div class="feed-post__meta">
+                    <button class="btn btn--like" disabled data-tooltip="Likes are disabled for new or unauthorized users">
+                        <span>@post.LikesCount</span>
+                    </button>
+                    <div class="feed-post__stats fade-in">
+                        <span class="feed-post__stat feed-post__stat--views">@((post.LikesCount * 89 + 19).ToString("N0"))</span>
+                        <span class="feed-post__stat feed-post__stat--downloads">@((post.LikesCount / 3 + 5).ToString("N0"))</span>
+                    </div>
+                </div>
             </div>
+        }
         }
     </div>
 
@@ -52,22 +73,22 @@
 </div>
 
 @section Scripts {
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const images = document.querySelectorAll('.feed-post__image');
-            const modal = document.getElementById('imageModal');
-            const modalImage = document.getElementById('modalImage');
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const images = document.querySelectorAll('.feed-post__image');
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
 
-            images.forEach(image => {
-                image.addEventListener('click', function () {
-                    modalImage.src = this.dataset.fullsrc;
-                    modal.classList.add('active');
-                });
-            });
-
-            modal.addEventListener('click', function () {
-                modal.classList.remove('active');
+        images.forEach(image => {
+            image.addEventListener('click', function () {
+                modalImage.src = this.dataset.fullsrc;
+                modal.classList.add('active');
             });
         });
-    </script>
+
+        modal.addEventListener('click', function () {
+            modal.classList.remove('active');
+        });
+    });
+</script>
 }

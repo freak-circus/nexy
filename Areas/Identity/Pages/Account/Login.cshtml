@@ -2,7 +2,7 @@
 @model LoginModel
 
 @{
-    ViewData["Title"] = "Вход";
+    ViewData["Title"] = "Login";
     Layout = "_Layout";
 }
 
@@ -10,30 +10,30 @@
 
 <div class="login-container">
     <div class="login-form fade-in">
-        <h2 class="login-form__title">Вход</h2>
+        <h2 class="login-form__title">Login</h2>
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="login-form__error" role="alert"></div>
             <div class="login-form__group">
-                <label asp-for="Input.Email" class="login-form__label">Электронная почта</label>
+                <label asp-for="Input.Email" class="login-form__label">Email</label>
                 <input asp-for="Input.Email" class="login-form__input" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                 <span asp-validation-for="Input.Email" class="login-form__error"></span>
             </div>
             <div class="login-form__group">
-                <label asp-for="Input.Password" class="login-form__label">Пароль</label>
-                <input asp-for="Input.Password" class="login-form__input" autocomplete="current-password" aria-required="true" placeholder="Пароль" />
+                <label asp-for="Input.Password" class="login-form__label">Password</label>
+                <input asp-for="Input.Password" class="login-form__input" autocomplete="current-password" aria-required="true" placeholder="Password" />
                 <span asp-validation-for="Input.Password" class="login-form__error"></span>
             </div>
             <div class="login-form__group login-form__checkbox">
                 <label class="login-form__label">
                     <input type="checkbox" asp-for="Input.RememberMe" class="login-form__checkbox-input" />
-                    Запомнить меня
+                    Remember me
                 </label>
             </div>
-            <button type="submit" class="login-form__submit">Войти</button>
+            <button type="submit" class="login-form__submit">Log In</button>
         </form>
 
         <div class="login-form__links">
-            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="login-form__link">Создать аккаунт</a>
+            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="login-form__link">Create an account</a>
         </div>
     </div>
 </div>
