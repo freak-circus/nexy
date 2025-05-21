@@ -64,6 +64,7 @@ namespace Nexy.Pages.Model
 
                 // Extract UTM parameters from session
                 var utmData = HttpContext.Session.GetString("UtmData");
+                _logger.LogInformation("UtmData from session: {UtmData}", utmData ?? "null");
                 var campaignData = new
                 {
                     Timestamp = DateTime.UtcNow.ToString("o"),
@@ -96,7 +97,7 @@ namespace Nexy.Pages.Model
                             UtmContent = utm.GetValueOrDefault("utm_content", string.Empty),
                             UserAgent = Request.Headers["User-Agent"].ToString(),
                             IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
-                            SessionId = utm.GetValueOrDefault("SessionId", HttpContext.Session.Id) // Используем SessionId из UtmData
+                            SessionId = utm.GetValueOrDefault("SessionId", HttpContext.Session.Id)
                         };
                     }
                     catch (JsonException ex)

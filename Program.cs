@@ -23,8 +23,14 @@ builder.Services.AddLogging(logging =>
 {
     logging.AddSerilog(new LoggerConfiguration()
         .MinimumLevel.Information()
-        .Filter.ByIncludingOnly(evt => evt.MessageTemplate.Text.Contains("CampaignTracking") || evt.MessageTemplate.Text.Contains("ConversionTracking") || evt.MessageTemplate.Text.Contains("TrackClick"))
-        .WriteTo.File(new JsonFormatter(), "logs/campaigns-{Date}.json", rollingInterval: RollingInterval.Day)
+        .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+        .Filter.ByIncludingOnly(evt => 
+            evt.MessageTemplate.Text.Contains("CampaignTracking") || 
+            evt.MessageTemplate.Text.Contains("ConversionTracking") || 
+            evt.MessageTemplate.Text.Contains("TrackClick") || 
+            evt.Level == Serilog.Events.LogEventLevel.Warning || 
+            evt.Level == Serilog.Events.LogEventLevel.Error)
+        .WriteTo.File(new JsonFormatter(), "logs/campaigns.json", rollingInterval: RollingInterval.Day)
         .WriteTo.Console()
         .CreateLogger());
 });
@@ -52,7 +58,7 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
 }
 
-// 🔐 Назначение роли "Admin" пользователю tony@stark.com
+// Назначение роли "Admin" пользователю tony@stark.com
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -91,9 +97,9 @@ else
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-app.UseSession(); // Перемещено до UseAuthentication
+app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapRazorPages(); // Убрано .WithStaticAssets() для теста
+app.MapRazorPages();
 
 app.Run();
