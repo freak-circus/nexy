@@ -1,8 +1,8 @@
 @page "{id:guid}"
 @model Nexy.Pages.Model.DetailsModel
 @{
-ViewData["Title"] = Model.Profile?.Name;
-var isOnline = new Random().NextDouble() < 0.3;
+    ViewData["Title"] = Model.Profile?.Name;
+    var isOnline = new Random().NextDouble() < 0.3;
 }
 
 <div class="container">
@@ -18,9 +18,9 @@ var isOnline = new Random().NextDouble() < 0.3;
                 <div class="profile-card__actions">
                     @if (!string.IsNullOrEmpty(Model.Profile.OnlyLink))
                     {
-                    <a href="@Model.Profile.OnlyLink" target="_blank" rel="noopener noreferrer" class="btn btn--onlyfans">
-                        🔓 Unlock full content
-                    </a>
+                        <a href="@Model.Profile.OnlyLink" target="_blank" rel="noopener noreferrer" class="btn btn--onlyfans" data-track-click="unlock-content">
+                            🔓 Unlock full content
+                        </a>
                     }
                     <button class="btn btn--subscribe" disabled data-tooltip="Subscriptions are disabled for new or unauthorized users">Subscribe</button>
                     <button class="btn btn--chat" disabled data-tooltip="Chat is disabled for new or unauthorized users">Chat</button>
@@ -32,31 +32,29 @@ var isOnline = new Random().NextDouble() < 0.3;
     <div class="space-y-4">
         @foreach (var post in Model.Profile.Posts.OrderByDescending(p => p.CreatedAt))
         {
-        @if (!post.IsNsfw || User.Identity.IsAuthenticated)
-        {
-            <div class="feed-post fade-in">
-                
-                <div class="feed-post__image-wrapper">
-                    
-                    <div class="feed-post__image-background" style="background-image: url('@post.ImageUrl');"></div>
-                    <img src="@post.ImageUrl" alt="Post" class="feed-post__image" data-fullsrc="@post.ImageUrl"/>
-                </div>
-                @if (post.IsNsfw && User.Identity.IsAuthenticated)
-                {
-                    <span class="feed-post__nsfw-badge" style="z-index: 9999;">NSFW</span>
-                }
-                <p class="feed-post__caption">@post.Caption</p>
-                <div class="feed-post__meta">
-                    <button class="btn btn--like" disabled data-tooltip="Likes are disabled for new or unauthorized users">
-                        <span>@post.LikesCount</span>
-                    </button>
-                    <div class="feed-post__stats fade-in">
-                        <span class="feed-post__stat feed-post__stat--views">@((post.LikesCount * 89 + 19).ToString("N0"))</span>
-                        <span class="feed-post__stat feed-post__stat--downloads">@((post.LikesCount / 3 + 5).ToString("N0"))</span>
+            @if (!post.IsNsfw || User.Identity.IsAuthenticated)
+            {
+                <div class="feed-post fade-in">
+                    <div class="feed-post__image-wrapper">
+                        <div class="feed-post__image-background" style="background-image: url('@post.ImageUrl');"></div>
+                        <img src="@post.ImageUrl" alt="Post" class="feed-post__image" data-fullsrc="@post.ImageUrl"/>
+                    </div>
+                    @if (post.IsNsfw && User.Identity.IsAuthenticated)
+                    {
+                        <span class="feed-post__nsfw-badge" style="z-index: 9999;">NSFW</span>
+                    }
+                    <p class="feed-post__caption">@post.Caption</p>
+                    <div class="feed-post__meta">
+                        <button class="btn btn--like" disabled data-tooltip="Likes are disabled for new or unauthorized users">
+                            <span>@post.LikesCount</span>
+                        </button>
+                        <div class="feed-post__stats fade-in">
+                            <span class="feed-post__stat feed-post__stat--views">@((post.LikesCount * 89 + 19).ToString("N0"))</span>
+                            <span class="feed-post__stat feed-post__stat--downloads">@((post.LikesCount / 3 + 5).ToString("N0"))</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
+            }
         }
     </div>
 
@@ -66,11 +64,17 @@ var isOnline = new Random().NextDouble() < 0.3;
 </div>
 
 @section Scripts {
+@* Генерация CSRF-токена *@
+@Html.AntiForgeryToken()
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const images = document.querySelectorAll('.feed-post__image');
         const modal = document.getElementById('imageModal');
         const modalImage = document.getElementById('modalImage');
+        const unlockButton = document.querySelector('.btn--onlyfans[data-track-click="unlock-content"]');
+
+        console.log('Unlock button:', unlockButton); // Отладка: проверяем, найдена ли кнопка
 
         images.forEach(image => {
             image.addEventListener('click', function () {
@@ -82,6 +86,37 @@ var isOnline = new Random().NextDouble() < 0.3;
         modal.addEventListener('click', function () {
             modal.classList.remove('active');
         });
+
+        if (unlockButton) {
+            unlockButton.addEventListener('click', function (event) {
+                console.log('Unlock button clicked'); // Отладка: проверяем клик
+                const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                fetch('/Model/Details/@Model.Profile.Id?handler=TrackClick', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'RequestVerificationToken': token
+                    },
+                    body: JSON.stringify({
+                        profileId: '@Model.Profile.Id',
+                        action: 'unlock-content'
+                    })
+                }).then(response => {
+                    console.log('Track click response:', response.status); // Отладка: статус ответа
+                    if (!response.ok) {
+                        throw new Error('Failed to track click: ' + response.status);
+                    }
+                    return response.json();
+                }).then(data => {
+                    console.log('Track click success:', data); // Отладка: успешный ответ
+                }).catch(error => {
+                    console.error('Error tracking click:', error); // Отладка: ошибка
+                });
+            });
+        } else {
+            console.error('Unlock button not found'); // Отладка: кнопка не найдена
+        }
     });
 </script>
 }

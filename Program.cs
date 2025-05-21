@@ -1,20 +1,50 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Nexy.Data;
+using Serilog;
+using Serilog.Formatting.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+builder.Services.AddAntiforgery(options =>
+{
+    options.HeaderName = "RequestVerificationToken";
+});
+
+builder.Services.AddLogging(logging =>
+{
+    logging.AddSerilog(new LoggerConfiguration()
+        .MinimumLevel.Information()
+        .Filter.ByIncludingOnly(evt => evt.MessageTemplate.Text.Contains("CampaignTracking") || evt.MessageTemplate.Text.Contains("ConversionTracking") || evt.MessageTemplate.Text.Contains("TrackClick"))
+        .WriteTo.File(new JsonFormatter(), "logs/campaigns-{Date}.json", rollingInterval: RollingInterval.Day)
+        .WriteTo.Console()
+        .CreateLogger());
+});
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-    .AddRoles<IdentityRole>() // ⬅️ добавлено
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
+}
 
 using (var scope = app.Services.CreateScope())
 {
@@ -30,15 +60,12 @@ using (var scope = app.Services.CreateScope())
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
     var roleName = "Admin";
-
-    // Создаём роль Admin, если её ещё нет
     var roleExists = await roleManager.RoleExistsAsync(roleName);
     if (!roleExists)
     {
         await roleManager.CreateAsync(new IdentityRole(roleName));
     }
 
-    // Назначаем роль пользователю
     var user = await userManager.FindByEmailAsync("tony@stark.com");
     if (user != null && !await userManager.IsInRoleAsync(user, roleName))
     {
@@ -63,13 +90,10 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
-app.UseAuthentication(); // ⬅️ обязательно!
+app.UseSession(); // Перемещено до UseAuthentication
+app.UseAuthentication();
 app.UseAuthorization();
-
-app.MapStaticAssets();
-app.MapRazorPages().WithStaticAssets();
+app.MapRazorPages(); // Убрано .WithStaticAssets() для теста
 
 app.Run();
