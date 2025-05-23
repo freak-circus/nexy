@@ -1,0 +1,4 @@
+Выполни на хосте (в той же папке, где docker-compose.yml):
+
+sudo chown -R 1654:1654 ./dataprotection
+sudo chown -R 1654:1654 logs
