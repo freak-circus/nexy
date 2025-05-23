@@ -1,8 +1,8 @@
 @page "{id:guid}"
 @model Nexy.Pages.Model.DetailsModel
 @{
-    ViewData["Title"] = Model.Profile?.Name;
-    var isOnline = new Random().NextDouble() < 0.3;
+ViewData["Title"] = Model.Profile?.Name;
+var isOnline = new Random().NextDouble() < 0.3;
 }
 
 <div class="container">
@@ -18,9 +18,9 @@
                 <div class="profile-card__actions">
                     @if (!string.IsNullOrEmpty(Model.Profile.OnlyLink))
                     {
-                        <a href="@Model.Profile.OnlyLink" target="_blank" rel="noopener noreferrer" class="btn btn--onlyfans" data-track-click="unlock-content">
-                            🔓 Unlock full content
-                        </a>
+                    <a href="@Model.Profile.OnlyLink" target="_blank" rel="noopener noreferrer" class="btn btn--onlyfans" data-track-click="unlock-content">
+                        🔓 Unlock full content
+                    </a>
                     }
                     <button class="btn btn--subscribe" disabled data-tooltip="Subscriptions are disabled for new or unauthorized users">Subscribe</button>
                     <button class="btn btn--chat" disabled data-tooltip="Chat is disabled for new or unauthorized users">Chat</button>
@@ -32,34 +32,45 @@
     <div class="space-y-4">
         @foreach (var post in Model.Profile.Posts.OrderByDescending(p => p.CreatedAt))
         {
-            @if (!post.IsNsfw || User.Identity.IsAuthenticated)
+        @if (!post.IsNsfw || User.Identity.IsAuthenticated)
+        {
+        <div class="feed-post fade-in">
+            <div class="feed-post__image-wrapper">
+                <div class="feed-post__image-background" style="background-image: url('@post.ImageUrl');"></div>
+                @{
+                var isVideo = post.ImageUrl != null && System.Text.RegularExpressions.Regex.IsMatch(post.ImageUrl, @"\.(mp4|webm|ogg)$", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                }
+                @if (isVideo)
+                {
+                <video src="@post.ImageUrl" class="feed-post__video" data-fullsrc="@post.ImageUrl" autoplay loop muted playsinline alt="Post video"></video>
+                }
+                else
+                {
+                <img src="@post.ImageUrl" class="feed-post__image" data-fullsrc="@post.ImageUrl" alt="Post image"/>
+                }
+            </div>
+            @if (post.IsNsfw && User.Identity.IsAuthenticated)
             {
-                <div class="feed-post fade-in">
-                    <div class="feed-post__image-wrapper">
-                        <div class="feed-post__image-background" style="background-image: url('@post.ImageUrl');"></div>
-                        <img src="@post.ImageUrl" alt="Post" class="feed-post__image" data-fullsrc="@post.ImageUrl"/>
-                    </div>
-                    @if (post.IsNsfw && User.Identity.IsAuthenticated)
-                    {
-                        <span class="feed-post__nsfw-badge" style="z-index: 9999;">NSFW</span>
-                    }
-                    <p class="feed-post__caption">@post.Caption</p>
-                    <div class="feed-post__meta">
-                        <button class="btn btn--like" disabled data-tooltip="Likes are disabled for new or unauthorized users">
-                            <span>@post.LikesCount</span>
-                        </button>
-                        <div class="feed-post__stats fade-in">
-                            <span class="feed-post__stat feed-post__stat--views">@((post.LikesCount * 89 + 19).ToString("N0"))</span>
-                            <span class="feed-post__stat feed-post__stat--downloads">@((post.LikesCount / 3 + 5).ToString("N0"))</span>
-                        </div>
-                    </div>
-                </div>
+            <span class="feed-post__nsfw-badge" style="z-index: 9999;">NSFW</span>
             }
+            <p class="feed-post__caption">@post.Caption</p>
+            <div class="feed-post__meta">
+                <button class="btn btn--like" disabled data-tooltip="Likes are disabled for new or unauthorized users">
+                    <span>@post.LikesCount</span>
+                </button>
+                <div class="feed-post__stats fade-in">
+                    <span class="feed-post__stat feed-post__stat--views">@((post.LikesCount * 89 + 19).ToString("N0"))</span>
+                    <span class="feed-post__stat feed-post__stat--downloads">@((post.LikesCount / 3 + 5).ToString("N0"))</span>
+                </div>
+            </div>
+        </div>
+        }
         }
     </div>
 
     <div class="modal" id="imageModal">
-        <img class="modal__image" id="modalImage" src="" alt="Full image" />
+        <img class="modal__image" id="modalImage" src="" alt="Full image" style="display: none;" />
+        <video class="modal__video" id="modalVideo" autoplay loop muted playsinline style="display: none;"></video>
     </div>
 </div>
 
@@ -69,22 +80,34 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const images = document.querySelectorAll('.feed-post__image');
+        const mediaElements = document.querySelectorAll('.feed-post__image, .feed-post__video');
         const modal = document.getElementById('imageModal');
         const modalImage = document.getElementById('modalImage');
+        const modalVideo = document.getElementById('modalVideo');
         const unlockButton = document.querySelector('.btn--onlyfans[data-track-click="unlock-content"]');
 
         console.log('Unlock button:', unlockButton); // Отладка: проверяем, найдена ли кнопка
 
-        images.forEach(image => {
-            image.addEventListener('click', function () {
-                modalImage.src = this.dataset.fullsrc;
+        mediaElements.forEach(media => {
+            media.addEventListener('click', function () {
+                const src = this.dataset.fullsrc;
+                const isVideo = /\.(mp4|webm|ogg)$/i.test(src);
+                modalImage.style.display = isVideo ? 'none' : 'block';
+                modalVideo.style.display = isVideo ? 'block' : 'none';
+                if (isVideo) {
+                    modalVideo.src = src;
+                    modalVideo.play();
+                } else {
+                    modalImage.src = src;
+                }
                 modal.classList.add('active');
             });
         });
 
         modal.addEventListener('click', function () {
             modal.classList.remove('active');
+            modalVideo.pause();
+            modalVideo.src = '';
         });
 
         if (unlockButton) {

@@ -11,11 +11,21 @@
     </div>
     <div class="feed-post__image-wrapper">
         <div class="feed-post__image-background" style="background-image: url('@Model.ImageUrl');"></div>
-        <img src="@Model.ImageUrl" class="feed-post__image" data-fullsrc="@Model.ImageUrl" alt="Post image" />
+        @{
+            var isVideo = Model.ImageUrl != null && System.Text.RegularExpressions.Regex.IsMatch(Model.ImageUrl, @"\.(mp4|webm|ogg)$", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        }
+        @if (isVideo)
+        {
+            <video src="@Model.ImageUrl" class="feed-post__video" data-fullsrc="@Model.ImageUrl" autoplay loop muted playsinline alt="Post video"></video>
+        }
+        else
+        {
+            <img src="@Model.ImageUrl" class="feed-post__image" data-fullsrc="@Model.ImageUrl" alt="Post image" />
+        }
     </div>
     @if (Model.IsNsfw && User.Identity.IsAuthenticated)
     {
-    <span class="feed-post__nsfw-badge">NSFW</span>
+        <span class="feed-post__nsfw-badge">NSFW</span>
     }
     <p class="feed-post__caption">@Model.Caption</p>
     <div class="feed-post__meta">
@@ -30,26 +40,39 @@
 </div>
 
 <div class="modal" id="imageModal">
-    <img class="modal__image" id="modalImage" src="" alt="Full image" />
+    <img class="modal__image" id="modalImage" src="" alt="Full image" style="display: none;" />
+    <video class="modal__video" id="modalVideo" autoplay loop muted playsinline style="display: none;"></video>
 </div>
 }
 
 @section Scripts {
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const images = document.querySelectorAll('.feed-post__image');
+        const mediaElements = document.querySelectorAll('.feed-post__image, .feed-post__video');
         const modal = document.getElementById('imageModal');
         const modalImage = document.getElementById('modalImage');
+        const modalVideo = document.getElementById('modalVideo');
 
-        images.forEach(image => {
-            image.addEventListener('click', function () {
-                modalImage.src = this.dataset.fullsrc;
+        mediaElements.forEach(media => {
+            media.addEventListener('click', function () {
+                const src = this.dataset.fullsrc;
+                const isVideo = /\.(mp4|webm|ogg)$/i.test(src);
+                modalImage.style.display = isVideo ? 'none' : 'block';
+                modalVideo.style.display = isVideo ? 'block' : 'none';
+                if (isVideo) {
+                    modalVideo.src = src;
+                    modalVideo.play();
+                } else {
+                    modalImage.src = src;
+                }
                 modal.classList.add('active');
             });
         });
 
         modal.addEventListener('click', function () {
             modal.classList.remove('active');
+            modalVideo.pause();
+            modalVideo.src = '';
         });
     });
 </script>

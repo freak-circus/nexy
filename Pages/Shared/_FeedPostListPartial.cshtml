@@ -13,7 +13,17 @@
             </div>
             <div class="feed-post__image-wrapper">
                 <div class="feed-post__image-background" style="background-image: url('@post.ImageUrl');"></div>
-                <img src="@post.ImageUrl" class="feed-post__image" data-fullsrc="@post.ImageUrl" alt="Post image" />
+                @{
+                    var isVideo = post.ImageUrl != null && System.Text.RegularExpressions.Regex.IsMatch(post.ImageUrl, @"\.(mp4|webm|ogg)$", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                }
+                @if (isVideo)
+                {
+                    <video src="@post.ImageUrl" class="feed-post__video" data-fullsrc="@post.ImageUrl" autoplay loop muted playsinline alt="Post video"></video>
+                }
+                else
+                {
+                    <img src="@post.ImageUrl" class="feed-post__image" data-fullsrc="@post.ImageUrl" alt="Post image" />
+                }
             </div>
             @if (post.IsNsfw && User.Identity.IsAuthenticated)
             {

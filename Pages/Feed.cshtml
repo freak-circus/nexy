@@ -13,7 +13,7 @@ Layout = "_Layout";
         </div>
         }
         <div id="post-container" class="space-y-4">
-            <partial name="_FeedPostListPartial" model="Model.Posts" />
+            <partial name="_FeedPostListPartial" model="Model.Posts"/>
         </div>
         <button id="load-more" class="load-more pulse"
                 style="display: block; margin: 1rem auto; padding: 1rem 2rem; font-size: 1.25rem; cursor: pointer;">
@@ -22,27 +22,44 @@ Layout = "_Layout";
     </div>
 
     <div class="modal" id="imageModal">
-        <img class="modal__image" id="modalImage" src="" alt="Full image" />
+        <img class="modal__image" id="modalImage" src="" alt="Full image" style="display: none;" />
+        <video class="modal__video" id="modalVideo" autoplay loop muted playsinline style="display: none;"></video>
     </div>
 </div>
 
 @section Scripts {
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Modal for images
-        const images = document.querySelectorAll('.feed-post__image');
+        // Modal for images and videos
+        const mediaElements = document.querySelectorAll('.feed-post__image, .feed-post__video');
         const modal = document.getElementById('imageModal');
         const modalImage = document.getElementById('modalImage');
+        const modalVideo = document.getElementById('modalVideo');
 
-        images.forEach(image => {
-            image.addEventListener('click', function () {
-                modalImage.src = this.dataset.fullsrc;
-                modal.classList.add('active');
+        function openModal(src, isVideo) {
+            modalImage.style.display = isVideo ? 'none' : 'block';
+            modalVideo.style.display = isVideo ? 'block' : 'none';
+            if (isVideo) {
+                modalVideo.src = src;
+                modalVideo.play();
+            } else {
+                modalImage.src = src;
+            }
+            modal.classList.add('active');
+        }
+
+        mediaElements.forEach(media => {
+            media.addEventListener('click', function () {
+                const src = this.dataset.fullsrc;
+                const isVideo = /\.(mp4|webm|ogg)$/i.test(src);
+                openModal(src, isVideo);
             });
         });
 
         modal.addEventListener('click', function () {
             modal.classList.remove('active');
+            modalVideo.pause();
+            modalVideo.src = '';
         });
 
         // Load More
@@ -60,12 +77,13 @@ Layout = "_Layout";
                     });
                     loaded += 10;
 
-                    // Rebind image click events
-                    const newImages = container.querySelectorAll('.feed-post__image');
-                    newImages.forEach(image => {
-                        image.addEventListener('click', function () {
-                            modalImage.src = this.dataset.fullsrc;
-                            modal.classList.add('active');
+                    // Rebind media click events
+                    const newMedia = container.querySelectorAll('.feed-post__image, .feed-post__video');
+                    newMedia.forEach(media => {
+                        media.addEventListener('click', function () {
+                            const src = this.dataset.fullsrc;
+                            const isVideo = /\.(mp4|webm|ogg)$/i.test(src);
+                            openModal(src, isVideo);
                         });
                     });
                 });
