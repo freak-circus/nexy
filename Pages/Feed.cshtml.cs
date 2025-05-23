@@ -9,7 +9,7 @@ namespace Nexy.Pages;
 public class FeedModel : PageModel
 {
     private readonly ApplicationDbContext _context;
-    private const int PageSize = 10;
+    private const int PageSize = 50;
 
     public FeedModel(ApplicationDbContext context)
     {

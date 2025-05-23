@@ -332,6 +332,7 @@ a:focus {
     border-radius: 4px;
     text-transform: uppercase;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
 }
 
 @media (max-width: 640px) {
