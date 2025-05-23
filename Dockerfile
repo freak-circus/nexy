@@ -1,7 +1,7 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
 WORKDIR /app
 RUN mkdir -p /app/logs && chown -R $APP_UID:$APP_UID /app/logs
+USER $APP_UID
 EXPOSE 8080
 EXPOSE 8081
 
