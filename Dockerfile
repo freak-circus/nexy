@@ -1,6 +1,7 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER $APP_UID
 WORKDIR /app
+RUN mkdir -p /app/logs && chown -R $APP_UID:$APP_UID /app/logs
 EXPOSE 8080
 EXPOSE 8081
 
@@ -10,12 +11,11 @@ WORKDIR /src
 COPY ["Nexy.csproj", "./"]
 RUN dotnet restore "Nexy.csproj"
 COPY . .
-WORKDIR "/src/"
-RUN dotnet build "./Nexy.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "Nexy.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Nexy.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Nexy.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
