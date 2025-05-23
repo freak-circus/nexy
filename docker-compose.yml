@@ -4,7 +4,6 @@ services:
     build: .
     ports:
       - "80:8080"
-      - "8081:8081"
     depends_on:
       postgres:
         condition: service_healthy
@@ -13,6 +12,7 @@ services:
       ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=nexy;Username=postgres;Password=nexy0129
     volumes:
       - ./logs:/app/logs
+      - ./dataprotection:/home/app/.aspnet/DataProtection-Keys
     logging:
       driver: json-file
       options:
