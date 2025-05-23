@@ -51,7 +51,7 @@ var isOnline = new Random().NextDouble() < 0.3;
             </div>
             @if (post.IsNsfw && User.Identity.IsAuthenticated)
             {
-            <span class="feed-post__nsfw-badge" style="z-index: 9999;">NSFW</span>
+            <span class="feed-post__nsfw-badge">NSFW</span>
             }
             <p class="feed-post__caption">@post.Caption</p>
             <div class="feed-post__meta">
